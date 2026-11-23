@@ -8,6 +8,8 @@ coverage
 *.log
 .certs
 .opencode
+.agents
+video
 .impeccable
 **/.impeccable
 playwright-report

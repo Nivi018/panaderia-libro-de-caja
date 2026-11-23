@@ -49,7 +49,8 @@ try {
   await run("server/dist/seed-admin.js");
   await run("server/dist/create-cashier.js");
   await run("server/dist/create-cashier.js", [], 2, { ...env, CASHIER_PASSWORD: randomBytes(24).toString("base64url") });
-  await run("node_modules/@playwright/test/cli.js", ["test"]);
+  await run("node_modules/@playwright/test/cli.js", process.argv.includes("--record-demo")
+    ? ["test", "demo-video.spec.ts"] : ["test", "caja.spec.ts"]);
 } finally {
   try { if (created) await client.query(`DROP DATABASE "${name}" WITH (FORCE)`); }
   finally { await client.end(); }

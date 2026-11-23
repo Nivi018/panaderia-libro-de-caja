@@ -18,6 +18,10 @@ test-results/
 *.pfx
 *.p12
 /.opencode/
+/.agents/skills/hyperframes/
+/.agents/skills/hyperframes-cli/
+**/.hyperframes/
+/video/portfolio/
 **/.impeccable/config.local.json
 **/.impeccable/reference/
 **/.impeccable/mocks/

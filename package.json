@@ -14,6 +14,7 @@
     "test": "npm test -w @panaderia/domain",
     "test:db": "npm run test:db -w @panaderia/server",
     "test:e2e": "node server/src/scripts/run-e2e.mjs",
+    "video:demo": "node server/src/scripts/run-e2e.mjs --record-demo",
     "db:generate": "npm run db:generate -w @panaderia/server",
     "db:migrate": "npm run db:migrate -w @panaderia/server",
     "db:seed": "npm run db:seed -w @panaderia/server",
