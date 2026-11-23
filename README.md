@@ -6,6 +6,8 @@ Aplicación web para reemplazar el cuaderno de caja de una panadería. El cajero
 
 ## Vista previa
 
+**[Ver o descargar el recorrido en video (MP4, 24 segundos)](https://github.com/Nivi018/panaderia-libro-de-caja/releases/download/demo-portafolio/panaderia-recorrido.mp4).** Grabación de la aplicación en uso: apertura del turno, captura de una venta y un gasto, cierre con diferencia justificada y descarga de PDF y XML. La grabación usa datos ficticios.
+
 Datos ficticios generados por la prueba de navegador en una base temporal.
 
 | Captura y arqueo | Historial |
