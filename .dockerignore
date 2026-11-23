@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/*.tsbuildinfo
+.git
+.env
+.env.*
+coverage
+*.log
+.certs
+.opencode
+.impeccable
+**/.impeccable
+playwright-report
+test-results
+**/*.dump

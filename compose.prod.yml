@@ -1,0 +1,17 @@
+services:
+  migrate:
+    build:
+      target: production
+    command: ["node", "server/dist/migrate.js"]
+    environment:
+      NODE_ENV: production
+  app:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    ports: !override
+      - "127.0.0.1:${APP_PORT:-18080}:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "Promise.all([fetch('http://127.0.0.1:' + process.env.API_PORT + '/readyz'),fetch('http://127.0.0.1:' + process.env.API_PORT + '/')]).then(r=>process.exit(r.every(x=>x.ok)?0:1),()=>process.exit(1))"]
+    develop: !reset null

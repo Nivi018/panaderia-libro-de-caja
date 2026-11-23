@@ -1,0 +1,1 @@
+ALTER TABLE "daily_ledgers" ADD COLUMN "closing_explanation" varchar(500);

@@ -1,0 +1,41 @@
+name: Verificación
+
+on: [push, pull_request]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: panaderia_test
+          POSTGRES_USER: panaderia_test
+          POSTGRES_PASSWORD: test-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U panaderia_test -d panaderia_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://panaderia_test:test-only@127.0.0.1:5432/panaderia_test
+      BETTER_AUTH_URL: http://localhost:5173
+      BETTER_AUTH_SECRET: 87ab63bd3783aaa5946aa088298cbfe1174c2dff2c0a9d48f9d7ade05aac6ad6
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run db:migrate
+      - run: npm run test:db
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

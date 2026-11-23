@@ -1,0 +1,36 @@
+{
+  "name": "@panaderia/server",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "exports": { "./rpc": { "types": "./src/rpc.ts" } },
+  "scripts": {
+    "dev": "node --watch --import tsx src/index.ts",
+    "build": "node build.mjs",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/scripts/migrate.ts",
+    "db:seed": "tsx src/scripts/seed-admin.ts",
+    "db:seed:demo": "tsx src/scripts/seed-demo.ts",
+    "users:create-cashier": "tsx src/scripts/create-cashier.ts",
+    "test:db": "tsx --test src/db/schema.test.ts src/auth.test.ts src/capture.test.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "2.1.11",
+    "@hono/zod-validator": "0.9.1",
+    "@panaderia/domain": "0.1.0",
+    "better-auth": "1.7.27",
+    "dotenv": "^17",
+    "drizzle-orm": "0.45.4",
+    "hono": "4.13.21",
+    "pg": "8.23.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/pg": "8.23.1",
+    "drizzle-kit": "0.31.11",
+    "esbuild": "0.28.2",
+    "tsx": "4.23.15"
+  }
+}

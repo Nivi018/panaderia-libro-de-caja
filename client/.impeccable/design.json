@@ -1,0 +1,17 @@
+{
+  "colors": {
+    "shell": "#103c47",
+    "primary": "#145666",
+    "surface": "#ffffff",
+    "page": "#f3f7f6",
+    "accent": "#eaf2f1",
+    "foreground": "#142c30",
+    "mutedForeground": "#4b6267",
+    "border": "#cbd9d8",
+    "focus": "#17677b"
+  },
+  "typography": {
+    "body": "Segoe UI, system-ui, sans-serif",
+    "numeric": "tabular-nums"
+  }
+}

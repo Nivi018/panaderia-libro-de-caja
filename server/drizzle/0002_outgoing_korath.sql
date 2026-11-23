@@ -1,0 +1,1 @@
+ALTER TABLE "ledger_entries" ADD COLUMN "position" integer DEFAULT 0 NOT NULL;

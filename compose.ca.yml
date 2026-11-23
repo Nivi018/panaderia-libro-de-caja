@@ -1,0 +1,11 @@
+secrets:
+  npm_ca:
+    file: ${NPM_CA_FILE:?Indica la ruta al certificado CA PEM de confianza}
+
+services:
+  app:
+    build:
+      secrets: [npm_ca]
+  migrate:
+    build:
+      secrets: [npm_ca]

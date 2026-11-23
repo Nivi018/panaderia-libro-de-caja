@@ -1,0 +1,36 @@
+{
+  "name": "panaderia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "^22.13.0 || >=24.0.0" },
+  "workspaces": ["server", "client", "packages/*"],
+  "scripts": {
+    "dev": "concurrently --kill-others --names api,web \"npm run dev -w @panaderia/server\" \"npm run dev -w @panaderia/client\"",
+    "build": "npm run build -w @panaderia/client && npm run build -w @panaderia/server",
+    "start": "npm run start -w @panaderia/server",
+    "typecheck": "npm run typecheck --workspaces && tsc -p tsconfig.tests.json",
+    "lint": "eslint .",
+    "test": "npm test -w @panaderia/domain",
+    "test:db": "npm run test:db -w @panaderia/server",
+    "test:e2e": "node server/src/scripts/run-e2e.mjs",
+    "db:generate": "npm run db:generate -w @panaderia/server",
+    "db:migrate": "npm run db:migrate -w @panaderia/server",
+    "db:seed": "npm run db:seed -w @panaderia/server",
+    "db:seed:demo": "npm run db:seed:demo -w @panaderia/server --",
+    "users:create-cashier": "npm run users:create-cashier -w @panaderia/server",
+    "setup:env": "node scripts/setup-env.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "^22",
+    "concurrently": "^9",
+    "eslint": "10.15.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.74.0"
+  },
+  "overrides": {
+    "@esbuild-kit/core-utils": { "esbuild": "0.25.12" },
+    "@ts-morph/common": { "minimatch": "11.0.1" }
+  }
+}
