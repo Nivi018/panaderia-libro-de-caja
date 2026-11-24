@@ -25,6 +25,8 @@ Datos ficticios generados por la prueba de navegador en una base temporal.
 
 **Stack:** React, TypeScript, Vite, Tailwind y shadcn/ui · Node.js, Hono RPC, Better Auth y Zod · PostgreSQL 16, Drizzle y Docker Compose · Playwright y GitHub Actions.
 
+La interfaz importa componentes oficiales de **shadcn/ui** desde [`client/src/components/ui`](client/src/components/ui): `Button`, `Input`, `Label`, `NativeSelect`, `Textarea`, `Badge` y `Table`. Tailwind conserva el tema y la composición de cada pantalla. Para añadir un componente, ejecuta `npm exec -w @panaderia/client -- shadcn add <componente>` y reutilízalo desde ese directorio.
+
 Consulta la [arquitectura y sus reglas](docs/arquitectura.md), el [plan original](PLAN.md) o la [guía de instalación](IMPLEMENTACION.md). El proyecto no pretende sustituir un sistema de punto de venta, inventario ni facturación.
 
 ## Diseño en OpenCode

@@ -5,8 +5,11 @@ import { useState, type FormEvent } from "react";
 import { create } from "zustand";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { mxn, shiftName } from "../capture/format";
 import { cutQuery, failure, ledgers, todayQuery } from "../capture/queries";
 
@@ -106,20 +109,20 @@ function History({ businessMonth }: { businessMonth: string }) {
   return <>
     <form className="surface history-filters" onSubmit={filter} noValidate aria-label="Filtros del historial">
       <div className="filter-controls">
-        <div><Label htmlFor="period-mode">Periodo</Label><select id="period-mode" value={draft.mode} onChange={(event) =>
-          update("mode", event.target.value === "range" ? "range" : "month")}><option value="month">Por mes</option><option value="range">Por fechas</option></select></div>
+        <div><Label htmlFor="period-mode">Periodo</Label><NativeSelect id="period-mode" value={draft.mode} onChange={(event) =>
+          update("mode", event.target.value === "range" ? "range" : "month")}><NativeSelectOption value="month">Por mes</NativeSelectOption><NativeSelectOption value="range">Por fechas</NativeSelectOption></NativeSelect></div>
         {draft.mode === "month" ? <div><Label htmlFor="history-month">Mes</Label>
           <Input id="history-month" type="month" value={draft.month} onChange={(event) => update("month", event.target.value)} /></div> :
           <><div><Label htmlFor="history-from">Desde</Label><Input id="history-from" type="date" value={draft.from}
             onChange={(event) => update("from", event.target.value)} /></div>
           <div><Label htmlFor="history-to">Hasta</Label><Input id="history-to" type="date" value={draft.to}
             onChange={(event) => update("to", event.target.value)} /></div></>}
-        <div><Label htmlFor="history-shift">Turno</Label><select id="history-shift" value={draft.shift} onChange={(event) =>
-          update("shift", event.target.value as Draft["shift"])}><option value="">Todos</option>
-          {shifts.map((shift) => <option value={shift} key={shift}>{shiftName[shift]}</option>)}</select></div>
-        <div><Label htmlFor="history-status">Estado de la tabla</Label><select id="history-status" value={draft.status} onChange={(event) =>
-          update("status", event.target.value as Draft["status"])}><option value="">Todos</option><option value="abierto">Abiertos</option>
-          <option value="cerrado">Cerrados</option></select></div>
+        <div><Label htmlFor="history-shift">Turno</Label><NativeSelect id="history-shift" value={draft.shift} onChange={(event) =>
+          update("shift", event.target.value as Draft["shift"])}><NativeSelectOption value="">Todos</NativeSelectOption>
+          {shifts.map((shift) => <NativeSelectOption value={shift} key={shift}>{shiftName[shift]}</NativeSelectOption>)}</NativeSelect></div>
+        <div><Label htmlFor="history-status">Estado de la tabla</Label><NativeSelect id="history-status" value={draft.status} onChange={(event) =>
+          update("status", event.target.value as Draft["status"])}><NativeSelectOption value="">Todos</NativeSelectOption><NativeSelectOption value="abierto">Abiertos</NativeSelectOption>
+          <NativeSelectOption value="cerrado">Cerrados</NativeSelectOption></NativeSelect></div>
         <div className="filter-actions"><Button>Aplicar filtros</Button>
           <Button type="button" variant="ghost" onClick={clearFilters}>Restablecer</Button></div>
       </div>
@@ -145,29 +148,27 @@ function History({ businessMonth }: { businessMonth: string }) {
       {list.isPending ? <p role="status" className="empty">Cargando cortes…</p> :
         list.isError ? <Retry retry={() => void list.refetch()} /> :
         rows.length === 0 ? <div className="empty"><p>No hay cortes con estos filtros.</p><span>Prueba otro periodo o restablece los filtros.</span></div> :
-        <div className="history-table-scroll">
-          <table className="history-table" role="table" aria-labelledby="history-results">
-            <thead role="rowgroup"><tr role="row"><th scope="col">Fecha y turno</th><th scope="col">Responsable</th><th scope="col">Estado</th>
-              <th scope="col" className="number">Ingresos</th><th scope="col" className="number">Egresos</th>
-              <th scope="col" className="number">Diferencia</th><th scope="col">Archivos</th></tr></thead>
-            <tbody role="rowgroup">{rows.map((row) => {
+          <Table className="history-table" role="table" aria-labelledby="history-results">
+            <TableHeader role="rowgroup"><TableRow role="row"><TableHead scope="col">Fecha y turno</TableHead><TableHead scope="col">Responsable</TableHead><TableHead scope="col">Estado</TableHead>
+              <TableHead scope="col" className="number">Ingresos</TableHead><TableHead scope="col" className="number">Egresos</TableHead>
+              <TableHead scope="col" className="number">Diferencia</TableHead><TableHead scope="col">Archivos</TableHead></TableRow></TableHeader>
+            <TableBody role="rowgroup">{rows.map((row) => {
               const diff = row.summary?.difference;
               const closed = row.status === "cerrado";
-              return <tr key={row.id} role="row">
+              return <TableRow key={row.id} role="row">
                 <th scope="row" role="rowheader"><time dateTime={row.date}>{showDate(row.date)}</time><span>{shiftName[row.shift]}</span></th>
-                <td role="cell" data-label="Responsable">{row.operator}</td><td role="cell" className="history-state"><span className={`badge ${closed ? "closed" : "open"}`}>{closed ? "Cerrado" : "Abierto"}</span></td>
-                <td role="cell" className="number" data-label="Ingresos">{money(row.summary?.income)}</td><td role="cell" className="number" data-label="Egresos">{money(row.summary?.expenses)}</td>
-                <td role="cell" className="number" data-label="Diferencia">{money(diff)}{diff != null && <span>{diff === "0.00" ? "Cuadra" : diff.startsWith("-") ? "Faltante" : "Sobrante"}</span>}</td>
-                <td role="cell" className="export-cell" data-label="Archivos">{closed ? <div className="export-actions">{(["pdf", "xml"] as const).map((format) => <Button key={format} size="sm"
+                <TableCell role="cell" data-label="Responsable">{row.operator}</TableCell><TableCell role="cell" className="history-state"><Badge variant="secondary" className={`badge ${closed ? "closed" : "open"}`}>{closed ? "Cerrado" : "Abierto"}</Badge></TableCell>
+                <TableCell role="cell" className="number" data-label="Ingresos">{money(row.summary?.income)}</TableCell><TableCell role="cell" className="number" data-label="Egresos">{money(row.summary?.expenses)}</TableCell>
+                <TableCell role="cell" className="number" data-label="Diferencia">{money(diff)}{diff != null && <span>{diff === "0.00" ? "Cuadra" : diff.startsWith("-") ? "Faltante" : "Sobrante"}</span>}</TableCell>
+                <TableCell role="cell" className="export-cell" data-label="Archivos">{closed ? <div className="export-actions">{(["pdf", "xml"] as const).map((format) => <Button key={format} size="sm"
                   variant="outline" disabled={download.isPending}
                   aria-label={`Descargar ${format.toUpperCase()} del ${showDate(row.date)}, turno ${shiftName[row.shift]}`}
                   onClick={() => download.mutate({ id: row.id, format })}>
                   <Download aria-hidden="true" /> {download.isPending && download.variables.id === row.id && download.variables.format === format ? "…" : format.toUpperCase()}
-                </Button>)}</div> : <span>No disponible</span>}</td>
-              </tr>;
-            })}</tbody>
-          </table>
-        </div>}
+                </Button>)}</div> : <span>No disponible</span>}</TableCell>
+              </TableRow>;
+            })}</TableBody>
+          </Table>}
       {data && data.pages > 1 && <nav className="history-pagination" aria-label="Páginas del historial">
         <Button size="sm" variant="outline" disabled={data.page <= 1 || list.isFetching}
           onClick={() => apply({ ...effective, page: String(data.page - 1) })}><ArrowLeft aria-hidden="true" /> Anterior</Button>

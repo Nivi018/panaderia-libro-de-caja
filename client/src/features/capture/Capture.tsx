@@ -6,8 +6,11 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { authClient } from "@/lib/auth-client";
 import { currentUserQuery } from "@/lib/query";
 import { HistoryPage } from "../history/History";
@@ -161,8 +164,8 @@ function ShiftPicker({ today }: { today: Today }) {
     <section className="entry-panel">
       <h2>Abrir turno</h2>
       {available.length ? <form className="stack" onSubmit={submit}>
-        <div><Label htmlFor="shift">Turno</Label><select id="shift" value={available.includes(shift as (typeof shifts)[number]) ? shift : available[0]}
-          onChange={(event) => setShift(event.target.value as typeof shift)}>{available.map((item) => <option key={item} value={item}>{shiftName[item]}</option>)}</select></div>
+        <div><Label htmlFor="shift">Turno</Label><NativeSelect id="shift" value={available.includes(shift as (typeof shifts)[number]) ? shift : available[0]}
+          onChange={(event) => setShift(event.target.value as typeof shift)}>{available.map((item) => <NativeSelectOption key={item} value={item}>{shiftName[item]}</NativeSelectOption>)}</NativeSelect></div>
         <div><Label htmlFor="opening">Fondo inicial (MXN)</Label><Input id="opening" inputMode="decimal" placeholder="0.00" value={opening}
           onChange={(event) => setOpening(event.target.value)} /></div>
         {error && <p className="notice error" role="alert">{error}</p>}
@@ -373,7 +376,7 @@ function Editor({ cut, draftKey }: { cut: Cut; draftKey: string }) {
     <section className="surface entry-sheet" aria-labelledby="movement-title">
       <div className="section-head">
         <div><h2 id="movement-title">Movimientos</h2><p>{shiftName[cut.ledger.shift]} · {rows.length} {rows.length === 1 ? "movimiento" : "movimientos"}</p></div>
-        <span className={`badge ${isClosed ? "closed" : "open"}`}>{isClosed ? <Lock size={15} aria-hidden="true" /> : <Banknote size={16} aria-hidden="true" />}{isClosed ? "Corte cerrado" : "Turno abierto"}</span>
+        <Badge variant="secondary" className={`badge ${isClosed ? "closed" : "open"}`}>{isClosed ? <Lock size={15} aria-hidden="true" /> : <Banknote size={16} aria-hidden="true" />}{isClosed ? "Corte cerrado" : "Turno abierto"}</Badge>
       </div>
       {stale && <div className="notice error" role="alert">
         <p>El corte cambió en otra sesión. No se sobrescribió tu borrador.</p>
@@ -402,13 +405,13 @@ function Editor({ cut, draftKey }: { cut: Cut; draftKey: string }) {
             const choices = categories[rows[index]?.type ?? "ingreso"];
             const typeField = register(`rows.${index}.type`);
             return <div className="movement-row" key={field.id} role="group" aria-label={`Movimiento ${index + 1}`}>
-              <label><span className="mobile-label">Tipo</span><select aria-label={`Tipo, fila ${index + 1}`} disabled={!canEdit}
+              <label><span className="mobile-label">Tipo</span><NativeSelect aria-label={`Tipo, fila ${index + 1}`} disabled={!canEdit}
                 {...typeField} onChange={(event) => {
                   void typeField.onChange(event);
                   setValue(`rows.${index}.category`, event.target.value === "egreso" ? categories.egreso[0] : categories.ingreso[0]);
-                }} onKeyDown={(event) => enter(event, index, "type")}><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option></select></label>
-              <label><span className="mobile-label">Categoría</span><select aria-label={`Categoría, fila ${index + 1}`} disabled={!canEdit} {...register(`rows.${index}.category`)}
-                onKeyDown={(event) => enter(event, index, "category")}>{choices.map((item) => <option value={item} key={item}>{categoryName[item]}</option>)}</select></label>
+                }} onKeyDown={(event) => enter(event, index, "type")}><NativeSelectOption value="ingreso">Ingreso</NativeSelectOption><NativeSelectOption value="egreso">Egreso</NativeSelectOption></NativeSelect></label>
+              <label><span className="mobile-label">Categoría</span><NativeSelect aria-label={`Categoría, fila ${index + 1}`} disabled={!canEdit} {...register(`rows.${index}.category`)}
+                onKeyDown={(event) => enter(event, index, "category")}>{choices.map((item) => <NativeSelectOption value={item} key={item}>{categoryName[item]}</NativeSelectOption>)}</NativeSelect></label>
               <label><span className="mobile-label">Concepto</span><Input aria-label={`Concepto, fila ${index + 1}`} placeholder={rows[index]?.type === "egreso" ? "Describe el gasto" : "Opcional para ventas"}
                 maxLength={200} disabled={!canEdit} {...register(`rows.${index}.concept`)} onKeyDown={(event) => enter(event, index, "concept")} /></label>
               <label><span className="mobile-label">Importe (MXN)</span><Input aria-label={`Importe, fila ${index + 1}`}
@@ -452,7 +455,7 @@ function Editor({ cut, draftKey }: { cut: Cut; draftKey: string }) {
           <strong>Confirma el cierre</strong><p>Una vez cerrado, el turno no se podrá editar.</p>
           {closeError && <p className="field-error" role="alert">{closeError}</p>}
           {difference !== "0.00" && <div><Label htmlFor="explanation">Explicación de la diferencia</Label>
-            <textarea id="explanation" rows={3} required maxLength={500} value={explanation} disabled={busy}
+            <Textarea id="explanation" rows={3} required maxLength={500} value={explanation} disabled={busy}
               onChange={(event) => setExplanation(event.target.value)} /></div>}
           {dirty && <p>Guarda los cambios antes de confirmar.</p>}
           <div className="close-actions"><Button type="button" variant="outline" disabled={busy}
